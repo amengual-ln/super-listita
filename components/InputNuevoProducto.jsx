@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createProduct } from "../store/reducers/products";
 import {
   StyleSheet,
   Text,
@@ -7,7 +9,6 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from "react-native";
-import { db } from "../db/firebase";
 
 const styles = StyleSheet.create({
   newProduct: {
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
 });
 
 const InputNuevoProducto = () => {
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     nombre: "",
   });
@@ -47,25 +49,21 @@ const InputNuevoProducto = () => {
   };
 
   const saveNewProduct = async () => {
+    if (state.nombre === "") return;
     const nuevoProducto = {
       nombre: state.nombre,
       comprado: false,
-    }
+    };
     setState({ nombre: "" });
     Keyboard.dismiss();
-    try {
-      const docRef = await db.collection("producto").add(nuevoProducto);
-      console.log("Se guardó '"+ nuevoProducto.nombre +"' con id", docRef.id);
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(createProduct(nuevoProducto))
   };
 
   return (
     <KeyboardAvoidingView style={styles.newProduct}>
       <TextInput
         style={styles.input}
-        placeholder="Escribi acá eso que falta"
+        placeholder="Escribí acá eso que falta"
         value={state.nombre}
         onChangeText={(value) => handleTextChange(value)}
       />
