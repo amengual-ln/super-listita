@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Octicons'
-const myIcon = <Icon name="check" size={30} color="#fff" />
+const checkIcon = <Icon name="check" size={30} color="#fff" />
 
 const styles = StyleSheet.create({
 	producto: {
@@ -56,7 +56,7 @@ const Product = ({ id, text, comprado = false }) => {
 				{text}
 			</Text>
 			<TouchableOpacity onPress={() => toggleEstado()}>
-				<View style={styles.check}>{myIcon}</View>
+				<View style={styles.check}>{checkIcon}</View>
 			</TouchableOpacity>
 		</View>
 	)
