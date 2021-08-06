@@ -11,3 +11,6 @@ export const getPurchasedProducts = (store) =>
 
 export const getProduct = (store, id) =>
 	getProductsState(store)?.find((product) => product.id === id)
+
+export const getProductsStatus = (store) =>
+	getProductsState(store).status

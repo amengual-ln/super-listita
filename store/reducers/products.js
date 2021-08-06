@@ -57,8 +57,11 @@ export const createProduct = (product) => async (dispatch, getState) => {
 
 export const fetchProducts = () => {
 	return async (dispatch) => {
+		dispatch({ type: '@products/SET_LOADING', payload: 'loading'})
 		const snapshot = await db.collection('producto').get()
 		dispatch({ type: '@products/SET_PRODUCTS', payload: snapshot.docs })
+		dispatch({ type: '@products/SET_LOADING', payload: 'idle'})
+
 	}
 }
 
@@ -72,6 +75,6 @@ export const togglePurchased = (id, comprado) => async (dispatch, getState) => {
 	dispatch({ type: '@products/TOGGLE_PURCHASED', payload: id })
 }
 
-export const toggleLoading = (status) => async (dispatch, getState) => {
+export const setLoading = (status) => async (dispatch, getState) => {
 	dispatch({ type: '@products/SET_LOADING', payload: status })
 }
