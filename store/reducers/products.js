@@ -24,12 +24,15 @@ export default function state(state = initialState, action) {
 	if (action.type === '@products/CREATE_PRODUCT') {
 		state.items.push(action.payload)
 	}
+	if (action.type === '@products/REMOVE_PRODUCT') {
+		state.items = state.items.filter((item) => item.id !== action.payload)
+	}
 	if (action.type === '@products/TOGGLE_PURCHASED') {
 		state.items = state.items.map((item) => {
 			if (item.id === action.payload) {
 				return {
 					...item,
-					comprado: !item.comprado
+					comprado: !item.comprado,
 				}
 			}
 			return item
@@ -55,13 +58,24 @@ export const createProduct = (product) => async (dispatch, getState) => {
 	}
 }
 
+export const removeProduct = (id) => async (dispatch, getState) => {
+	try {
+		await db.collection('producto').doc(id).delete()
+		dispatch({
+			type: '@products/REMOVE_PRODUCT',
+			payload: id,
+		})
+	} catch (error) {
+		console.log(error)
+	}
+}
+
 export const fetchProducts = () => {
 	return async (dispatch) => {
-		dispatch({ type: '@products/SET_LOADING', payload: 'loading'})
+		dispatch({ type: '@products/SET_LOADING', payload: 'loading' })
 		const snapshot = await db.collection('producto').get()
 		dispatch({ type: '@products/SET_PRODUCTS', payload: snapshot.docs })
-		dispatch({ type: '@products/SET_LOADING', payload: 'idle'})
-
+		dispatch({ type: '@products/SET_LOADING', payload: 'idle' })
 	}
 }
 
