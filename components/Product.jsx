@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { useWindowDimensions } from 'react-native'
 import { togglePurchased, removeProduct } from '../store/reducers/products'
 import {
 	StyleSheet,
@@ -7,11 +8,11 @@ import {
 	Vibration,
 	View,
 	TouchableOpacity,
-	Dimensions,
 } from 'react-native'
 
 import { PanGestureHandler } from 'react-native-gesture-handler'
 import Animated, {
+	runOnJS,
 	useAnimatedGestureHandler,
 	useAnimatedStyle,
 	useSharedValue,
@@ -53,27 +54,34 @@ const styles = StyleSheet.create({
 })
 
 const Product = ({ id, text, comprado = false }) => {
+	const window = useWindowDimensions();
 	const dispatch = useDispatch()
 	const toggleEstado = () => {
 		Vibration.vibrate(50)
 		dispatch(togglePurchased(id, comprado))
 	}
 
+	const removeItem = (id) => {
+		Vibration.vibrate(50)
+		dispatch(removeProduct(id))
+	}
+
 	const translateX = useSharedValue(0)
 
 	const panGestureEvent = useAnimatedGestureHandler({
 		onStart: (event, context) => {
+			'worklet'
 			context.translateX = translateX.value
 		},
 		onActive: (event, context) => {
+			'worklet'
 			translateX.value = event.translationX + context.translateX
 		},
 		onEnd: (event, context) => {
-			const screenWidth = Dimensions.get('window').width
 			const distance = Math.abs(translateX.value)
-			if (distance > screenWidth / 2) {
-				translateX.value = withSpring(translateX.value * 2)
-				dispatch(removeProduct(id))
+			if (distance > window.width / 2) {
+				translateX.value = withSpring(window.width, { stiffness: 150, mass: 0.5 })
+				runOnJS(removeItem)(id)
 			} else {
 				translateX.value = withSpring(0, { stiffness: 150, mass: 0.5 })
 			}
@@ -81,6 +89,7 @@ const Product = ({ id, text, comprado = false }) => {
 	})
 
 	const animationStyle = useAnimatedStyle(() => {
+		"worklet"
 		return {
 			transform: [
 				{

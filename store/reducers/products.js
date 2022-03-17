@@ -60,11 +60,11 @@ export const createProduct = (product) => async (dispatch, getState) => {
 
 export const removeProduct = (id) => async (dispatch, getState) => {
 	try {
-		await db.collection('producto').doc(id).delete()
 		dispatch({
 			type: '@products/REMOVE_PRODUCT',
 			payload: id,
 		})
+		await db.collection('producto').doc(id).delete()
 	} catch (error) {
 		console.log(error)
 	}

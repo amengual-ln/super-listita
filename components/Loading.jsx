@@ -1,4 +1,5 @@
 import React from 'react'
+import { useWindowDimensions } from 'react-native'
 import { StyleSheet, Text, View } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Octicons'
@@ -9,8 +10,10 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: 0,
 		left: 0,
-		width: '100vw',
-		height: '100vh;',
+		bottom: 0,
+		right: 0,
+		width: window.width,
+		height: window.height,
 		backgroundColor: 'rgba(0,0,0,0.3)',
 		zIndex: 999,
 	},
@@ -18,7 +21,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: '50%',
 		left: '50%',
-		transform: [{ translate: '-50%' }, { translateY: '-50%' }],
+
 		fontSize: 24,
 		fontWeight: 'bold',
 		zIndex: 999,
@@ -26,6 +29,7 @@ const styles = StyleSheet.create({
 })
 
 export default function Loading() {
+	const window = useWindowDimensions();
 	return (
 		<>
 			<View style={styles.loading}></View>
